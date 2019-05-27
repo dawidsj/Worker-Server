@@ -1,8 +1,10 @@
 <?php
+
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-class Stations extends Migration
+
+class CreateBoards extends Migration
 {
     /**
      * Run the migrations.
@@ -11,13 +13,13 @@ class Stations extends Migration
      */
     public function up()
     {
-        Schema::create('stations', function (Blueprint $table) {
+        Schema::create('boards', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->string('name');
-            $table->float('position_x');
-            $table->float('position_y');
+            $table->integer('owner_id')->unsigned();
+            $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -25,6 +27,6 @@ class Stations extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stations');
+        Schema::dropIfExists('boards');
     }
 }

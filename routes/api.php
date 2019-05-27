@@ -17,17 +17,12 @@ use Illuminate\Http\Request;
 Route::group(['middleware' => ['CORS']], function () {
     Route::post('register', 'UserController@register');
     Route::post('login', 'UserController@authenticate');
-    Route::get('open', 'DataController@open');
-    Route::post('user/weather', 'UserController@userLocationData');
-    Route::get('data', 'StationController@getCurrentData');
-
-    Route::post('station/login', 'StationController@authenticate');
-    Route::post('station/send', 'StationController@sendData');
-    Route::get('station/list', 'StationController@getListOfStations');
+    Route::get('test', 'BoardController@test');
 
     Route::group(['middleware' => ['jwt.verify']], function() {
-        Route::get('user', 'UserController@getAuthenticatedUser');
-        Route::get('closed', 'DataController@closed');
+        Route::post('user', 'UserController@getAuthenticatedUser');
+        Route::post('user/boards/owner', 'BoardController@getOwnerBoards');
+
     });
 });
 

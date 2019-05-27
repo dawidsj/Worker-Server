@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Data;
 use App\Models\Station;
-use App\Services\DataService;
+use App\Services\BoardService;
 use App\Services\StationService;
 use App\User;
 use Illuminate\Http\Request;
@@ -16,14 +15,13 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
-    private $dataService, $stationService;
+    private $dataService;
 
     /**
      * UserController constructor.
-     * @param DataService $dataService
-     * @param StationService $stationService
+     * @param BoardService $dataService
      */
-    public function __construct(DataService $dataService, StationService $stationService)
+    public function __construct(BoardService $dataService)
     {
         Config::set('jwt.user', User::class);
         Config::set('auth.providers', ['users' => [
@@ -32,7 +30,7 @@ class UserController extends Controller
         ]]);
 
         $this->dataService = $dataService;
-        $this->stationService = $stationService;
+
     }
 
     /**
@@ -86,59 +84,10 @@ class UserController extends Controller
      */
     public function getAuthenticatedUser()
     {
-        try {
-
-            if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['Użytkownik nie został znaleziony'], 404);
-            }
-
-        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-            $newToken = JWTAuth::refresh(JWTAuth::getToken());
-            return response()->json(['Token się przedawnił!'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-            return response()->json(['Token jest niewłaśniwy!'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-            return response()->json(['Token nie istnieje!'], $e->getStatusCode());
-
+        if (! $user = JWTAuth::parseToken()->authenticate()) {
+            return response()->json(['Użytkownik nie został znaleziony'], 404);
         }
 
         return response()->json(compact('user'));
-    }
-
-    /**
-     * @param Request $request
-     * @return bool|\Illuminate\Http\JsonResponse
-     */
-    public function userLocationData(Request $request) {
-        try {
-            if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['Użytkownik nie został znaleziony'], 404);
-            }
-
-        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-            return response()->json(['Token się przedawnił!'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-            return response()->json(['Token jest niewłaśniwy!'], $e->getStatusCode());
-
-        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-            return response()->json(['Token nie istnieje!'], $e->getStatusCode());
-
-        }
-
-        $station = $this->stationService->getNearestStation($request->x, $request->y);
-        if(empty($station)) return false;
-
-        $data = $this->dataService->getDataFromStation($station->id);
-
-        return response()->json(compact('data'),201);
     }
 }
