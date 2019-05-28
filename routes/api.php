@@ -22,7 +22,7 @@ Route::group(['middleware' => ['CORS']], function () {
     Route::group(['middleware' => ['jwt.verify']], function() {
         Route::post('user', 'UserController@getAuthenticatedUser');
         Route::post('user/boards/owner', 'BoardController@getOwnerBoards');
-
+        Route::post('user/boards/participant', 'BoardController@getParticipantBoards');
     });
 });
 

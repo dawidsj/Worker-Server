@@ -26,4 +26,10 @@ class BoardController extends Controller
         return $this->boardService->getOwnerBoards($user->id);
     }
 
+    public function getParticipantBoards(): ?Collection {
+        if (! $user = JWTAuth::parseToken()->authenticate()) {
+            return response()->json(['Użytkownik nie został znaleziony'], 404);
+        }
+        return $this->boardService->getParticipantBoards($user->id);
+    }
 }
