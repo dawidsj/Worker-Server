@@ -23,6 +23,8 @@ Route::group(['middleware' => ['CORS']], function () {
         Route::post('user', 'UserController@getAuthenticatedUser');
         Route::post('user/boards/owner', 'BoardController@getOwnerBoards');
         Route::post('user/boards/participant', 'BoardController@getParticipantBoards');
+        Route::post('user/boards/content', 'BoardController@getBoardsContent');
+        Route::post('user/boards', 'BoardController@createBoard');
     });
 });
 

@@ -10,7 +10,7 @@ class Lists extends Model
 {
     protected $table = 'lists';
     const ID = 'id';
-    const BOARD_ID = 'id';
+    const BOARD_ID = 'board_id';
     const NAME = 'name';
     const ORDER = 'order';
 
